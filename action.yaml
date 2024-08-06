@@ -47,9 +47,13 @@ runs:
         then
           echo "bumped=`cat ${bump_commit_file}`" >> "$GITHUB_OUTPUT"
           rm ${bump_commit_file}
+          updated=true
         else
           echo "bumped=false" >> "$GITHUB_OUTPUT"
+          updated=false
         fi
+
+        echo "::set-output name=updated::$updated"
 
     - name: Commit version bump
       if: steps.version_bumped.outputs.bumped != 'false'
