@@ -43,7 +43,7 @@ def bump_pyproject(pyproject: Path, new_version_number: str) -> None:
     """Bumps the version number in the pyproject file"""
     with pyproject.open("r") as fh:
         d = toml.load(pyproject)
-        d["project"]["version"] = new_version_number
+        d["tool"]["poetry"]["version"] = new_version_number
     with pyproject.open("w") as fh:
         toml.dump(d, fh)
 
