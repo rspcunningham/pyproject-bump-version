@@ -13,7 +13,7 @@ def get_main_version(project_file: Path, main_branch: Optional[str] = None) -> V
     """
     main_branch = main_branch if main_branch else "main"
     pyproject = check_output(["git", "cat-file", "blob", f"origin/{main_branch}:./{project_file}"])
-    version_string = toml.loads(pyproject.decode())["project"]["version"]
+    version_string = toml.loads(pyproject.decode())["tool.poetry"]["version"]
     return parse(version_string)
 
 
@@ -23,7 +23,7 @@ def get_current_version(pyproject: str) -> Version:
     """
     with open(pyproject, "r") as fh:
         pyproject_dict = toml.load(fh)
-        version_string = pyproject_dict["project"]["version"]
+        version_string = pyproject_dict["tool.poetry"]["version"]
         return parse(version_string)
 
 
