@@ -83,20 +83,23 @@ def main():
     main_version = get_main_version(pyproject, main_branch)
     current_version = get_current_version(pyproject)
 
-    print(f"{main_branch} branch version: {main_version}")
-    print(f"Current branch version: {current_version}")
+    #print(f"{main_branch} branch version: {main_version}")
+    #print(f"Current branch version: {current_version}")
     if current_version <= main_version:
         new_version = get_next_version(main_version, bump_type)
         bump_pyproject(pyproject, new_version)
         bump_message = (
             f"Bumped version from {current_version} to {new_version}"
         )
-        print(bump_message)
         with open(bump_commit_file, "w") as fh:
             fh.write(bump_message)
-    else:
-        print('No need to bump the version this time.')
 
+        version = new_version
+    else:
+        version = current_version
+    
+    print(version)
+        
 
 if __name__ == "__main__":
     main()

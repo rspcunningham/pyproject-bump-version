@@ -34,11 +34,13 @@ runs:
         # random file name
         bump_commit_file=$(date | shasum | cut -d ' ' -f1)
 
-        python ${{ github.action_path }}/version_compare.py \
+        version=$(python python ${{ github.action_path }}/version_compare.py \
           --main ${{ inputs.main_branch }} \
           --bump_type ${{ inputs.bump_type }} \
           --pyproject ${{ inputs.file_to_bump }} \
-          --bump_commit_file ${bump_commit_file}
+          --bump_commit_file ${bump_commit_file})
+
+        echo "::set-output name=version::$version"
 
         # this file only exists if a version bump has happened
         if [ -f ${bump_commit_file} ]
@@ -55,3 +57,15 @@ runs:
       with:
         message: ${{ steps.version_bumped.outputs.bumped }}
         add: ${{ inputs.file_to_bump }}
+
+    - name: Create a release
+      if: steps.version_bumped.outputs.bumped != 'false'
+      uses: actions/create-release@v1
+      with:
+        tag_name: v${{ steps.version_bumped.outputs.version }}
+        release_name:  v${{ steps.version_bumped.outputs.version }}
+        body: |
+          v${{ steps.version_bumped.outputs.version }}
+        draft: true
+        prerelease: true
+
